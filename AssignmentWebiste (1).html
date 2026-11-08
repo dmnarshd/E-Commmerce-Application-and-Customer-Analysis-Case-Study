@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tech-Zone Gadgets</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#d8eefe;--card:#fff;--text:#1e2a37;--muted:#6b7280;--primary:#0b74de;--primary-hover:#094f96;--accent:#7c3aed;--pill-bg:#e74c3c;--shadow:0 8px 28px rgba(0,0,0,.10);--radius:14px}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:Inter,system-ui,Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg)}
+    html{scroll-behavior:smooth}
+
+    /* Topbar */
+    .topbar{position:fixed;inset:0 0 auto 0;height:60px;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;backdrop-filter:saturate(140%) blur(8px);background:rgba(255,255,255,.35);border-bottom:1px solid rgba(0,0,0,.06)}
+    .brand-mini{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+    .logo-mini{width:30px;height:30px;display:block;object-fit:contain;background:transparent}
+    .brand-mini span{font-family:Poppins,Inter,sans-serif;font-weight:700}
+    .top-actions{display:flex;gap:10px;align-items:center}
+
+    /* Contact link in top bar */
+    .contact-link{
+      font-size:13px;
+      color:#0b74de;
+      text-decoration:none;
+      border:1px solid #0b74de;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:600;
+      transition:background .2s ease;
+    }
+    .contact-link:hover{background:#0b74de;color:#fff}
+
+    .pill{background:var(--pill-bg);color:#fff;padding:6px 10px;border-radius:999px;font-weight:700;font-size:12px}
+    .btn,.btn:link,.btn:visited{border:0;border-radius:999px;padding:10px 18px;font-weight:600;cursor:pointer;background:var(--primary);color:#fff;text-decoration:none;display:inline-block}
+    .btn:hover{background:var(--primary-hover)}
+    .ghost,.ghost:link,.ghost:visited{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+
+    /* Hero */
+    .hero{min-height:92vh;position:relative;display:flex;align-items:center;justify-content:center;background:#e9f3fc;overflow:hidden}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,.25) 35%, rgba(255,255,255,.15) 70%, rgba(216,238,254,.8) 100%)}
+    .hero-inner{position:relative;z-index:1;text-align:center;padding:80px 18px 24px;max-width:1100px;display:grid;justify-items:center;gap:16px}
+    .brand-logo{width:110px;height:auto;display:block;object-fit:contain;background:transparent} /* <- no background */
+
+    .hero-title{margin:0;font-family:Poppins,sans-serif;font-weight:800;font-size:clamp(2rem,6vw,4rem);letter-spacing:.02em;color:#1e293b}
+    .hero-sub{font-size:clamp(.95rem,2vw,1.05rem);color:#334155;max-width:900px;line-height:1.7}
+    .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px}
+    .scroll-cue{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:22px;color:#334155}
+
+    /* Sections */
+    .wrap{max-width:1000px;margin:0 auto;padding:20px 18px}
+    .section-title{font-family:Poppins,sans-serif;font-size:1.6rem;margin:10px 0 8px}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .card{background:var(--card);border:1px solid #e7e7e7;border-radius:12px;padding:12px;box-shadow:4px 4px 15px rgba(0,0,0,.10);transition:transform .15s ease}
+    .card:hover{transform:translateY(-3px)}
+    .card h2{margin:10px 0 6px 0;color:#0f5132;font-size:20px}
+    .price{color:var(--accent);font-weight:800;margin:0}
+    .desc{color:var(--muted);margin:8px 0 12px 0}
+    .card .btn{padding:8px 12px;border-radius:10px}
+
+    /* Product images (fixed: no cropping) */
+    .product-img{
+      width:100%;
+      height:180px;
+      object-fit:contain;
+      padding:8px;
+      border-radius:10px;
+      background:#f9fbff;
+      display:block;
+      transition:transform .25s ease;
+    }
+    .product-img.contain{object-fit:contain;padding:8px;background:#f9fbff}
+    .product-img:hover{transform:scale(1.03)}
+
+    /* Cart */
+    #cartPanel{background:#fff;border:1px solid #ddd;border-radius:12px;box-shadow:2px 2px 6px rgba(0,0,0,.12);overflow:hidden;display:none}
+    #cartHeader{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#f7f7fb;border-bottom:1px solid #eee}
+    #cartItems{list-style:none;margin:0;padding:0}
+    .cart-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:12px 16px;border-bottom:1px solid #f0f0f0;align-items:center}
+    .remove{background:#ef4444;color:#fff;border:0;padding:8px 10px;border-radius:8px}
+    .remove:hover{background:#b91c1c}
+    #cartFooter{display:flex;flex-direction:column;align-items:center;padding:14px 16px;background:#fafafa;text-align:center}
+    .cash-note{margin-top:8px;font-weight:700;color:#0b74de}
+    .muted{color:var(--muted);font-size:14px}
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <a class="brand-mini" href="#top" aria-label="Tech-Zone home">
+      <!-- Use transparent PNG (no extra background) -->
+      <img src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/techzone-logo.png?raw=true" alt="Tech-Zone logo" class="logo-mini">
+      <span>Tech-Zone</span>
+    </a>
+    <div class="top-actions">
+      <a class="contact-link" href="https://instagram.com/ksa_tech_zone" target="_blank" rel="noopener">Contact us on Instagram</a>
+      <span>Cart: <span id="cartCounter" class="pill">0</span></span>
+      <button class="btn" id="toggleBtn" onclick="toggleCart()">Show Cart</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section id="top" class="hero">
+    <div class="hero-inner">
+      <!-- Transparent logo, no padding or background -->
+      <img src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/techzone-logo.png?raw=true" alt="Tech-Zone Logo" class="brand-logo">
+
+      <h1 class="hero-title">TECH-ZONE GADGETS</h1>
+      <p class="hero-sub">
+        Modern, affordable, and reliable tech accessories in
+        <strong>Dhahran City, Saudi Arabia</strong> — bringing innovation closer
+        to students, professionals, and creators across the Kingdom.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#products" class="btn">Shop Now</a>
+        <a href="#about" class="btn ghost">About Us</a>
+      </div>
+    </div>
+    <div class="scroll-cue">▾</div>
+  </section>
+
+  <!-- Products -->
+  <section id="products" class="wrap">
+    <h2 class="section-title">Our Products</h2>
+    <div class="grid" id="courseGrid">
+
+      <article class="card"><img class="product-img" data-fn="power-bank-20000-mah.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/power-bank-20000-mah.jpg?raw=true" alt="Power Bank 20000 mAh" loading="lazy" onerror="imgFallback(this)"><h2>Power Bank 20000 mAh</h2><p class="price">159 SAR</p><p class="desc">Fast-charging dual USB outputs.</p><button class="btn" onclick="addToCart('Power Bank 20000 mAh',159)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="smartphone-tripod-stand.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/smartphone-tripod-stand.jpg?raw=true" alt="Smartphone Tripod Stand" loading="lazy" onerror="imgFallback(this)"><h2>Smartphone Tripod Stand</h2><p class="price">79 SAR</p><p class="desc">Adjustable, steady shots.</p><button class="btn" onclick="addToCart('Smartphone Tripod Stand',79)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="gaming-headset-rgb.jpeg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/gaming-headset-rgb.jpeg?raw=true" alt="Gaming Headset RGB" loading="lazy" onerror="imgFallback(this)"><h2>Gaming Headset RGB</h2><p class="price">199 SAR</p><p class="desc">Immersive sound + mic.</p><button class="btn" onclick="addToCart('Gaming Headset RGB',199)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="usb-desk-fan.jpeg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/usb-desk-fan.jpeg?raw=true" alt="USB Desk Fan" loading="lazy" onerror="imgFallback(this)"><h2>USB Desk Fan</h2><p class="price">59 SAR</p><p class="desc">Compact & quiet workspace fan.</p><button class="btn" onclick="addToCart('USB Desk Fan',59)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="webcam-1080p.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/webcam-1080p.jpg?raw=true" alt="Webcam 1080p" loading="lazy" onerror="imgFallback(this)"><h2>Webcam 1080p</h2><p class="price">129 SAR</p><p class="desc">HD webcam for meetings.</p><button class="btn" onclick="addToCart('Webcam 1080p',129)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="fitness-tracker-band-lite.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/fitness-tracker-band-lite.jpg?raw=true" alt="Fitness Tracker Band Lite" loading="lazy" onerror="imgFallback(this)"><h2>Fitness Tracker Band Lite</h2><p class="price">139.99 SAR</p><p class="desc">Tracks steps, calories, health.</p><button class="btn" onclick="addToCart('Fitness Tracker Band Lite',139.99)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="multi-port-usb-c-hub.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/multi-port-usb-c-hub.jpg?raw=true" alt="Multi-Port USB-C Hub" loading="lazy" onerror="imgFallback(this)"><h2>Multi-Port USB-C Hub</h2><p class="price">130 SAR</p><p class="desc">HDMI, USB 3.0, SD Card, fast-charge ports.</p><button class="btn" onclick="addToCart('Multi-Port USB-C Hub',130)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="keyboard.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/keyboard.jpg?raw=true" alt="Keyboard" loading="lazy" onerror="imgFallback(this)"><h2>Keyboard</h2><p class="price">30.99 SAR</p><p class="desc">Wireless keyboard compatible with all systems.</p><button class="btn" onclick="addToCart('Keyboard',30.99)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="digital-camera.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/digital-camera.jpg?raw=true" alt="Digital Camera" loading="lazy" onerror="imgFallback(this)"><h2>Digital Camera</h2><p class="price">399.99 SAR</p><p class="desc">Capture memories anywhere.</p><button class="btn" onclick="addToCart('Digital Camera',399.99)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="silent-wireless-mouse.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/silent-wireless-mouse.jpg?raw=true" alt="Silent Wireless Mouse" loading="lazy" onerror="imgFallback(this)"><h2>Silent Wireless Mouse</h2><p class="price">89 SAR</p><p class="desc">Bluetooth, quiet clicks.</p><button class="btn" onclick="addToCart('Silent Wireless Mouse',89)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="smart-home-plug.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/smart-home-plug.jpg?raw=true" alt="Smart Home Plug" loading="lazy" onerror="imgFallback(this)"><h2>Smart Home Plug</h2><p class="price">79 SAR</p><p class="desc">Control appliances via Wi-Fi.</p><button class="btn" onclick="addToCart('Smart Home Plug',79)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="wireless-earbuds-pro.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/wireless-earbuds-pro.jpg?raw=true" alt="Wireless Earbuds Pro" loading="lazy" onerror="imgFallback(this)"><h2>Wireless Earbuds Pro</h2><p class="price">249 SAR</p><p class="desc">Noise-cancelling, 24-hour battery.</p><button class="btn" onclick="addToCart('Wireless Earbuds Pro',249)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="mini-bluetooth-speaker.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/mini-bluetooth-speaker.jpg?raw=true" alt="Mini Bluetooth Speaker" loading="lazy" onerror="imgFallback(this)"><h2>Mini Bluetooth Speaker</h2><p class="price">99 SAR</p><p class="desc">Compact with strong bass.</p><button class="btn" onclick="addToCart('Mini Bluetooth Speaker',99)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="led-ring-light-tripod.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/led-ring-light-tripod.jpg?raw=true" alt="LED Ring Light + Tripod" loading="lazy" onerror="imgFallback(this)"><h2>LED Ring Light + Tripod</h2><p class="price">149 SAR</p><p class="desc">Ideal lighting for creators.</p><button class="btn" onclick="addToCart('LED Ring Light with Tripod',149)">Add to Cart</button></article>
+
+      <article class="card"><img class="product-img" data-fn="external-hard-drive-1tb.jpg" src="https://github.com/DanaAlzahid/tech-zone-site/blob/main/images/external-hard-drive-1tb.jpg?raw=true" alt="External Hard Drive 1TB" loading="lazy" onerror="imgFallback(this)"><h2>External Hard Drive 1TB</h2><p class="price">299.99 SAR</p><p class="desc">Fast USB 3.0 secure storage.</p><button class="btn" onclick="addToCart('External Hard Drive 1TB',299.99)">Add to Cart</button></article>
+
+    </div>
+
+    <!-- Cart -->
+    <div id="cartPanel" style="margin-top:24px;">
+      <div id="cartHeader"><strong>Your Cart</strong><span class="muted">Click “Remove” to delete an item</span></div>
+      <ul id="cartItems"></ul>
+      <div id="cartFooter">
+        <strong>Total: <span id="cartTotal">0.00</span> SAR</strong>
+        <div class="muted">VAT included</div>
+        <div class="cash-note">💵 Cash on Delivery Only — Online payment coming soon!</div>
+        <div class="muted">Questions? DM us on Instagram
+          <a href="https://instagram.com/ksa_tech_zone" target="_blank" rel="noopener" style="color:#0b74de;font-weight:600;">@ksa_tech_zone</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us -->
+  <section id="about" class="wrap">
+    <h2 class="section-title">About Us</h2>
+    <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:24px 28px;">
+      <p style="font-size:16px;line-height:1.8;">
+        <strong>Tech-Zone Gadgets</strong> is a student-founded startup project dedicated to
+        <strong>expanding access to quality technology across Saudi Arabia</strong>. We’re senior
+        <strong>MIS students at Prince Mohammed Bin Fahd University (PMU)</strong> who believe that
+        reliable, affordable gadgets help students, professionals, and creators do their best work.
+      </p>
+
+      <p style="font-size:16px;line-height:1.8;">
+        Our focus is simple: <strong>make modern tech easier to get, easier to use, and fairly priced</strong>.
+        We curate essential accessories—power, audio, smart home, and creator gear—and prioritize
+        products that deliver real value in day-to-day Saudi life.
+      </p>
+
+      <ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:18px 0 8px;padding:0;list-style:none;">
+        <li>✅ Affordable & dependable</li>
+        <li>✅ Local student-led initiative</li>
+        <li>✅ Practical, everyday tech</li>
+      </ul>
+
+      <h3 style="margin-top:18px;color:var(--primary);font-family:Poppins,sans-serif;">Founding Team</h3>
+      <ul style="list-style:none;padding:0;line-height:1.8;">
+        <li>👩🏻‍💻 <strong>Zainab A. Alnahash</strong></li>
+        <li>👩🏻‍💻 <strong>Dana Alzahid</strong></li>
+        <li>👩🏻‍💻 <strong>Daman Arshad</strong></li>
+        <li>👩🏻‍💻 <strong>Reem Alabdulaziz</strong></li>
+        <li>👩🏻‍💻 <strong>Layan Alhajri</strong></li>
+      </ul>
+
+      <p style="font-size:15px;color:var(--muted);margin-top:10px;">
+        📍 Based in <strong>Dhahran, Saudi Arabia 🇸🇦</strong><br>
+        💡 <em>Our goal: make great tech reachable for everyone in the Kingdom.</em><br>
+        📩 Questions? DM us on Instagram:
+        <a href="https://instagram.com/ksa_tech_zone" target="_blank" rel="noopener" style="color:#0b74de;font-weight:600;">@ksa_tech_zone</a>
+      </p>
+    </div>
+  </section>
+
+  <script>
+    // graceful image fallback + console hint
+    function imgFallback(img){
+      console.warn("Missing image:", img.getAttribute('src'), "| expected file:", img.dataset.fn);
+      img.style.background = "#fff0f0";
+      img.style.border = "1px dashed #e11d48";
+      img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400">
+           <rect width="100%" height="100%" fill="#fff"/>
+           <rect x="2" y="2" width="596" height="396" rx="12" ry="12" fill="#ffe4e6" stroke="#fecdd3"/>
+           <text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" font-family="Inter,Arial" font-size="16" fill="#9f1239">
+             Image not found: ${img.dataset.fn}
+           </text>
+         </svg>`
+      );
+      img.classList.add('contain');
+    }
+
+    // Cart
+    const cart=[];let total=0;
+    const counter=document.getElementById('cartCounter');
+    const list=document.getElementById('cartItems');
+    function addToCart(name,price){cart.push({name,price});total+=price;counter.textContent=cart.length;renderCart();}
+    function removeFromCart(i){if(i>=0&&i<cart.length){total-=cart[i].price;cart.splice(i,1);counter.textContent=cart.length;renderCart();}}
+    function renderCart(){
+      list.innerHTML='';
+      cart.forEach((it,idx)=>{
+        const li=document.createElement('li');li.className='cart-row';
+        li.innerHTML=`<div class="cart-name">${it.name}</div><div class="cart-price">${it.price.toFixed(2)} SAR</div>`;
+        const b=document.createElement('button');b.className='remove';b.textContent='Remove';b.onclick=()=>removeFromCart(idx);
+        li.appendChild(b);list.appendChild(li);
+      });
+      document.getElementById('cartTotal').textContent=total.toFixed(2);
+    }
+    function toggleCart(){
+      const p=document.getElementById('cartPanel');const b=document.getElementById('toggleBtn');
+      const v=p.style.display==='block';p.style.display=v?'none':'block';b.textContent=v?'Show Cart':'Hide Cart';
+    }
+
+  </script>
+</body>
+</html>
+
+
+
